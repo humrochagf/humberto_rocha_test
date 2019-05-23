@@ -4,4 +4,5 @@ Line = namedtuple('Line', ['x1', 'x2'])
 
 
 def is_overlapping(line1, line2):
-    return line1.x2 >= line2.x1 and line2.x2 >= line1.x1
+    """Given two lines and return True if they overlap or False if not"""
+    return max(line1) >= min(line2) and max(line2) >= min(line1)

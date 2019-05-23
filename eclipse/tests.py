@@ -55,3 +55,10 @@ def test_is_overlapping_decimal_number():
     line_b = Line(2.2, 7.8)
 
     assert is_overlapping(line_a, line_b) is True
+
+
+def test_is_overlapping_partial_x1_gt_x2():
+    line_a = Line(5, 1)
+    line_b = Line(6, 3)
+
+    assert is_overlapping(line_a, line_b) is True
