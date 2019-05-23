@@ -4,6 +4,13 @@ This program takes two lines at the x-axis and determine if they overlap.
 
 This code was written and tested with python 3.7.
 
+## Naming
+
+The naming for this solution came from the eclipse itself where the moon "overlaps"
+the sun, or the sun "overlaps" the moon.
+
+## Environment
+
 Prepare a new environment to install the packages without polluting your system
 
 ```shell
