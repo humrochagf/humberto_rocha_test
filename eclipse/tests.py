@@ -1,4 +1,8 @@
-from eclipse import Line, is_overlapping
+import pytest
+from click import BadParameter
+from click.testing import CliRunner
+
+from eclipse import Line, cli, input_to_line, is_overlapping
 
 
 def test_line_creation():
@@ -62,3 +66,33 @@ def test_is_overlapping_partial_x1_gt_x2():
     line_b = Line(6, 3)
 
     assert is_overlapping(line_a, line_b) is True
+
+
+def test_input_to_line_success():
+    assert input_to_line('1, 2') == Line(1, 2)
+
+
+def test_input_to_line_type_error():
+    with pytest.raises(BadParameter):
+        input_to_line('1') == Line(1, 2)
+
+
+def test_input_to_line_value_error():
+    with pytest.raises(BadParameter):
+        input_to_line('1, a') == Line(1, 2)
+
+
+def test_cli_execution_do_overlap():
+    runner = CliRunner()
+    result = runner.invoke(cli, input='1,2\n2,3')
+
+    assert result.exit_code == 0
+    assert 'do overlap' in result.output
+
+
+def test_cli_execution_do_not_overlap():
+    runner = CliRunner()
+    result = runner.invoke(cli, input='1,2\n3,4')
+
+    assert result.exit_code == 0
+    assert 'do not overlap' in result.output

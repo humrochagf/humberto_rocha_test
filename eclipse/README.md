@@ -19,3 +19,23 @@ To run the tests use:
 ```shell
 pytest tests.py
 ```
+
+## Running the code
+
+To run eclipse just run:
+
+```shell
+./eclipse.py
+```
+
+or
+
+```shell
+python3 eclipse.py
+```
+
+It will prompt you to enter each line, and the pattern for each line is `x1,x2`:
+
+```
+1,2
+```
