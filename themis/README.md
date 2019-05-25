@@ -21,6 +21,29 @@ source .env/bin/activate
 pip install -r requirements-dev.txt
 ```
 
+## Intalling the library
+
+To install the library at your system run:
+
+```shell
+pip install .
+```
+
+## Usage
+
+You can compare versions by using the `cmp_version` function:
+
+```python
+from themis import cmp_version
+
+cmp_version('1.1', '1.0')
+1
+cmp_version('1.1', '1.1')
+0
+cmp_version('1.1', '1.2')
+-1
+```
+
 ## Running the tests
 
 To run the tests use:
