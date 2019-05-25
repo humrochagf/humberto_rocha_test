@@ -22,7 +22,7 @@ all test cases you could think of.
 
 [Click here to check this solution](/themis)
 
-## Question C
+## Question C (chronos)
 
 At Ormuco, we want to optimize every bits of software we write. Your goal is
 to write a new library that can be integrated to the Ormuco stack. Dealing
@@ -41,3 +41,5 @@ services so it needs to meet the following criteria:
 
 As a hint, we are not looking for quantity, but rather quality, maintainability,
 scalability, testability and a code that you can be proud of.
+
+[Click here to check this solution](/chronos)
