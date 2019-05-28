@@ -106,3 +106,18 @@ def test_get_three_items():
 
     assert chronos.map['key2'] == chronos.head
     assert chronos.map['key1'] == chronos.tail
+
+
+def test_max_size():
+    chronos = Chronos(max_size=2)
+
+    chronos.set('key1', 'value1')
+    chronos.set('key2', 'value2')
+
+    assert len(chronos) == 2
+
+    chronos.set('key3', 'value3')
+
+    assert len(chronos) == 2
+
+    assert 'key1' not in chronos.map
