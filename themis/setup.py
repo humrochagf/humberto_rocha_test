@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import find_packages, setup
+from setuptools import setup
 
 with open('README.md') as fd:
     README = fd.read()
@@ -17,6 +17,6 @@ setup(
     long_description_content_type="text/markdown",
     author='Humberto Rocha',
     author_email='humrochagf@gmail',
-    packages=find_packages(),
+    py_modules=['themis'],
     platforms='any',
 )
