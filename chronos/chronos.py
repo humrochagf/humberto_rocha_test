@@ -1,3 +1,6 @@
+import pendulum
+
+
 class Chronos:
 
     def __init__(self, max_size=100):
@@ -52,9 +55,11 @@ class Chronos:
         if key in self.map:
             node = self.map[key]
             self._remove(node)
-            self._append(node)
 
-            return node
+            if not node.ttu or node.ttu >= pendulum.now():
+                self._append(node)
+
+                return node
 
     def get(self, key):
         node = self._get_node(key)
@@ -62,7 +67,7 @@ class Chronos:
         if node:
             return node.data
 
-    def set(self, key, data):
+    def set(self, key, data, expiration=None):
         node = self._get_node(key)
 
         if node:
@@ -72,15 +77,20 @@ class Chronos:
                 node = self._pop()
                 del self.map[node.key]
 
-            node = Node(key, data)
+            node = Node(key, data, expiration)
             self._append(node)
             self.map[key] = node
 
 
 class Node:
 
-    def __init__(self, key, data):
+    def __init__(self, key, data, expiration=None):
         self.key = key
         self.data = data
         self.prev = None
         self.next = None
+
+        if expiration:
+            self.ttu = pendulum.now().add(seconds=expiration)
+        else:
+            self.ttu = None

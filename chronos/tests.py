@@ -1,3 +1,5 @@
+import time
+
 from chronos import Chronos
 
 
@@ -121,3 +123,15 @@ def test_max_size():
     assert len(chronos) == 2
 
     assert 'key1' not in chronos.map
+
+
+def test_expiration():
+    chronos = Chronos()
+
+    chronos.set('key', 'value', 0.1)
+
+    assert chronos.get('key') == 'value'
+
+    time.sleep(0.1)
+
+    assert chronos.get('key') is None
