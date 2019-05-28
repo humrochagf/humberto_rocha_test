@@ -1,6 +1,10 @@
 import time
+from unittest.mock import patch
 
-from chronos import Chronos
+import pytest
+from asynctest import CoroutineMock
+
+from chronos import Chronos, ChronosClient
 
 
 def test_instance():
@@ -135,3 +139,28 @@ def test_expiration():
     time.sleep(0.1)
 
     assert chronos.get('key') is None
+
+
+@pytest.mark.asyncio
+async def test_client_set():
+    with patch('chronos.ChronosClient.send_command',
+               new=CoroutineMock()) as send_command_mock:
+        client = ChronosClient()
+
+        await client.set('key', 'value', 10)
+
+        send_command_mock.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_client_get():
+    with patch('chronos.ChronosClient.send_command',
+               new=CoroutineMock()) as send_command_mock:
+        send_command_mock.return_value = '{"result": null}'
+        client = ChronosClient()
+
+        result = await client.get('key')
+
+        send_command_mock.assert_called_once()
+
+        assert result is None

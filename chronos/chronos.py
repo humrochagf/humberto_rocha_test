@@ -1,3 +1,8 @@
+import asyncio
+import json
+import socket
+
+import click
 import pendulum
 
 
@@ -130,3 +135,127 @@ class Node:
             self.ttu = pendulum.now().add(seconds=expiration)
         else:
             self.ttu = None
+
+
+class ChronosServer:
+    """Async server Start the cache"""
+
+    def __init__(self, host='127.0.0.1', port=9191, max_size=100):
+        self.host = host
+        self.port = port
+        self.chronos = Chronos(max_size)
+        # create asyncio event loop
+        self._loop = asyncio.get_event_loop()
+        # create the coroutine that will bind the socket with the port
+        coroutine = asyncio.start_server(
+            self.request_handler, host, port, loop=self._loop,
+            family=socket.AF_INET,
+        )
+        # run the coroutine to obtain the server socket
+        self._socket = self._loop.run_until_complete(coroutine)
+
+    def run(self):
+        print(f'Server listening at {self.host}:{self.port}...')
+
+        try:
+            self._loop.run_forever()
+        except KeyboardInterrupt:
+            print('Terminating server...')
+
+        self._socket.close()
+        self._loop.run_until_complete(self._socket.wait_closed())
+        self._loop.close()
+
+        print('Server closed')
+
+    async def request_handler(self, reader, writer):
+        address = writer.get_extra_info('peername')
+
+        print(f'Connection received from {address}')
+
+        data = await reader.readuntil(b'\r\n')
+
+        cmd = json.loads(data.decode().strip())
+
+        if cmd.get('command') == 'set':
+            self.chronos.set(
+                cmd.get('key'),
+                cmd.get('value'),
+                cmd.get('expiration'),
+            )
+        elif cmd.get('command') == 'get':
+            writer.write(json.dumps({
+                'return': self.chronos.get(cmd.get('key')),
+            }).encode())
+            await writer.drain()
+        else:
+            print('Invalid command')
+
+        writer.write(b'\r\n')
+        await writer.drain()
+
+        writer.close()
+
+
+class ChronosClient:
+    """Async client to comunicate with the Chronos Server"""
+
+    def __init__(self, host='127.0.0.1', port=9191):
+        self.host = host
+        self.port = port
+
+    async def send_command(self, command):
+        reader, writer = await asyncio.open_connection(self.host, self.port)
+
+        writer.write(f'{command}\r\n'.encode())
+        await writer.drain()
+
+        result = await reader.readuntil(b'\r\n')
+
+        writer.close()
+        await writer.wait_closed()
+
+        return result
+
+    async def set(self, key, value, expiration=None):
+        command = json.dumps({
+            'command': 'set',
+            'key': key,
+            'value': value,
+            'expiration': expiration,
+        })
+
+        await self.send_command(command)
+
+    async def get(self, key):
+        command = json.dumps({
+            'command': 'get',
+            'key': key,
+        })
+
+        result = await self.send_command(command)
+
+        return json.loads(result).get('result')
+
+
+@click.group(invoke_without_command=True)
+@click.pass_context
+def cli(ctx):
+    if not ctx.invoked_subcommand:
+        click.echo(ctx.get_help())
+
+
+@cli.command('server', help='Starts the Chronos Server')
+@click.option('--host', '-h', default='127.0.0.1', help='Server host')
+@click.option('--port', '-p', default=9191, help='Server port')
+def server(host, port):
+    try:
+        server = ChronosServer()
+    except OSError as error:
+        print(f'Failed to create the server:\n{error}')
+    else:
+        server.run()
+
+
+if __name__ == '__main__':
+    cli()
