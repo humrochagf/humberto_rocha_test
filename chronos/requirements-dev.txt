@@ -1,2 +1,3 @@
-pytest==4.5.0
+-r requirements.txt
 pytest-clarity==0.1.0a1
+pytest==4.5.0
