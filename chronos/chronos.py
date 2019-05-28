@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import asyncio
 import json
 import socket
@@ -235,7 +237,7 @@ class ChronosClient:
 
         result = await self.send_command(command)
 
-        return json.loads(result).get('result')
+        return json.loads(result).get('return')
 
 
 @click.group(invoke_without_command=True)

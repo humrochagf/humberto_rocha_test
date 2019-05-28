@@ -15,6 +15,14 @@ setup(
     author='Humberto Rocha',
     author_email='humrochagf@gmail',
     py_modules=['chronos'],
+    entry_points={
+        'console_scripts': [
+            'chronos=chronos:cli'
+        ],
+    },
     platforms='any',
-    install_requires=['pendulum==2.0.4'],
+    install_requires=[
+        'Click==7.0',
+        'pendulum==2.0.4',
+    ],
 )

@@ -30,6 +30,8 @@ pip install .
 
 ## Usage
 
+This is an example on how to use Chronos core LRU:
+
 ```python
 from chronos import Chronos
 
@@ -44,6 +46,31 @@ chronos.get('key3')
 
 chronos.get('key1')
 None
+```
+
+To start the Chronos server you can run:
+
+```shell
+./chronos.py server
+```
+
+And this is an example on how to use the Chronos client:
+
+```python
+import asyncio
+
+from chronos import ChronosClient
+
+async def test_client():
+    client = ChronosClient()
+
+    await client.set('key1', 'value1')
+
+    result = await client.get('key1')
+
+    print(result)
+
+asyncio.run(test_client())
 ```
 
 ## Running the tests
