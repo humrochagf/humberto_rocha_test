@@ -20,6 +20,32 @@ source .env/bin/activate
 pip install -r requirements-dev.txt
 ```
 
+## Intalling the library
+
+To install the library at your system run:
+
+```shell
+pip install .
+```
+
+## Usage
+
+```python
+from chronos import Chronos
+
+chronos = Chronos(max_size=2)
+
+chronos.set('key1', 'value1')
+chronos.set('key2', 'value2')
+chronos.set('key3', 'value3')
+
+chronos.get('key3')
+'value3'
+
+chronos.get('key1')
+None
+```
+
 ## Running the tests
 
 To run the tests use:
